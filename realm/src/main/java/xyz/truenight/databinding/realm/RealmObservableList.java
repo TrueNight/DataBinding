@@ -5,6 +5,7 @@ import android.databinding.ObservableList;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,6 +94,72 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
         this.mirror = Collections.emptyList();
         this.listener = createListener();
         this.updateOnModification = updateOnModification;
+    }
+
+    @Deprecated
+    @Override
+    public T set(int index, T element) {
+        return super.set(index, element);
+    }
+
+    @Deprecated
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    @Deprecated
+    @Override
+    public boolean add(T t) {
+        return super.add(t);
+    }
+
+    @Deprecated
+    @Override
+    public void add(int index, T element) {
+        super.add(index, element);
+    }
+
+    @Deprecated
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        return super.addAll(c);
+    }
+
+    @Deprecated
+    @Override
+    public boolean addAll(int index, Collection<? extends T> c) {
+        return super.addAll(index, c);
+    }
+
+    @Deprecated
+    @Override
+    protected void removeRange(int fromIndex, int toIndex) {
+        super.removeRange(fromIndex, toIndex);
+    }
+
+    @Deprecated
+    @Override
+    public boolean remove(Object o) {
+        return super.remove(o);
+    }
+
+    @Deprecated
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return super.removeAll(c);
+    }
+
+    @Deprecated
+    @Override
+    public T remove(int index) {
+        return super.remove(index);
+    }
+
+    @Deprecated
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return super.retainAll(c);
     }
 
     private OrderedRealmCollectionChangeListener createListener() {

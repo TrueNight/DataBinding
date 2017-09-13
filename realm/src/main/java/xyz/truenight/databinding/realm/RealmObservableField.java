@@ -61,12 +61,18 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
         this.listener = createListener();
     }
 
+    @Deprecated
+    @Override
+    public void set(T value) {
+
+    }
+
     private RealmChangeListener<RealmResults<T>> createListener() {
         return new RealmChangeListener<RealmResults<T>>() {
             @Override
             public void onChange(RealmResults<T> t) {
                 if (t.isValid()) {
-                    RealmObservableField.this.set(Utils.unmanage(realmConfig, Utils.first(t)));
+                    RealmObservableField.super.set(Utils.unmanage(realmConfig, Utils.first(t)));
                 }
             }
         };
