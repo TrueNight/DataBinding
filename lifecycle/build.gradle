@@ -1,28 +1,22 @@
 apply plugin: 'com.android.library'
-apply plugin: 'realm-android'
 
 ext {
-    bintrayName = 'databinding-realm'
-    libraryName = 'DataBindingRealm'
-    artifact = 'realm' // should be same as module name
-    libraryDescription = 'BaseObservables based on RealmObjects change listeners'
+    bintrayName = 'databinding-lifecycle'
+    libraryName = 'LifecycleBinding'
+    artifact = 'lifecycle' // should be same as module name
+    libraryDescription = 'Activity and Fragment classes with MVVM databinding integration'
 }
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
-
-
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
         dataBinding.enabled true
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -35,8 +29,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    // components
+    implementation "android.arch.lifecycle:runtime:1.1.1"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+
+    implementation 'xyz.truenight.utils:utils:2.1.1'
 }
 
 apply from: '../ext.gradle'
