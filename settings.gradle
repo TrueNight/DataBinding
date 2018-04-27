@@ -1,1 +1,1 @@
-include ':realm', ':lifecycle'
+include ':realm', ':lifecycle', ':rxjava'
