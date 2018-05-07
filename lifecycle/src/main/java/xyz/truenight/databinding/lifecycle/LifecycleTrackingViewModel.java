@@ -19,7 +19,6 @@ import static android.arch.lifecycle.Lifecycle.State.STARTED;
 
 public abstract class LifecycleTrackingViewModel extends ViewModel {
 
-    private boolean active;
     private int mActiveCount;
 
     public LifecycleTrackingViewModel() {
@@ -40,11 +39,7 @@ public abstract class LifecycleTrackingViewModel extends ViewModel {
         });
     }
 
-    private void activeStateChanged(boolean newActive) {
-        if (newActive == active) {
-            return;
-        }
-        active = newActive;
+    private void activeStateChanged(boolean active) {
         boolean wasInactive = this.mActiveCount == 0;
         this.mActiveCount += active ? 1 : -1;
         if (wasInactive && active) {

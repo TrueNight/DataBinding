@@ -13,6 +13,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
@@ -99,10 +100,6 @@ public abstract class BindingLifecycleDialogFragment<B extends ViewDataBinding> 
         return (VM) map.get(viewModelClass.getCanonicalName());
     }
 
-    protected BindingList list(ViewModelBinding... binding) {
-        return new BindingList(binding);
-    }
-
     public B binding() {
         return mBinding;
     }
@@ -113,6 +110,32 @@ public abstract class BindingLifecycleDialogFragment<B extends ViewDataBinding> 
         } catch (Throwable th) {
             Log.e(TAG, "", th);
         }
+    }
+
+    protected BindingList list(ViewModelBinding... binding) {
+        return new BindingList(binding);
+    }
+
+    protected final ViewModelBinding bind(FragmentActivity activity, int variableId,
+                                          Class<? extends ViewModel> vmClass) {
+        return new ViewModelBinding(activity, variableId, vmClass);
+    }
+
+    protected final <T extends ViewModel> ViewModelBinding bind(FragmentActivity activity,
+                                                                int variableId, Class<T> vmClass,
+                                                                ViewModelBinding.Factory<T> factory) {
+        return new ViewModelBinding(activity, variableId, vmClass, factory);
+    }
+
+    protected final ViewModelBinding bind(Fragment fragment, int variableId,
+                                          Class<? extends ViewModel> vmClass) {
+        return new ViewModelBinding(fragment, variableId, vmClass);
+    }
+
+    protected final <T extends ViewModel> ViewModelBinding bind(Fragment fragment,
+                                                                int variableId, Class<T> vmClass,
+                                                                ViewModelBinding.Factory<T> factory) {
+        return new ViewModelBinding(fragment, variableId, vmClass, factory);
     }
 
     public static FragmentActivity getFragmentActivity(Context context) {
