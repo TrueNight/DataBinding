@@ -26,6 +26,8 @@ public abstract class LifecycleTrackingViewModel extends ViewModel {
 
     public void registerLifecycle(final LifecycleOwner owner) {
         owner.getLifecycle().addObserver(new GenericLifecycleObserver() {
+            boolean mActive = false;
+
             @Override
             @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
             public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
@@ -36,18 +38,23 @@ public abstract class LifecycleTrackingViewModel extends ViewModel {
 
                 activeStateChanged(isActiveState(source.getLifecycle().getCurrentState()));
             }
-        });
-    }
 
-    private void activeStateChanged(boolean active) {
-        boolean wasInactive = this.mActiveCount == 0;
-        this.mActiveCount += active ? 1 : -1;
-        if (wasInactive && active) {
-            onActive();
-        }
-        if (this.mActiveCount == 0 && !active) {
-            onInactive();
-        }
+            private void activeStateChanged(boolean active) {
+                if (active == mActive) {
+                    return;
+                }
+
+                mActive = active;
+                boolean wasInactive = mActiveCount == 0;
+                mActiveCount += active ? 1 : -1;
+                if (wasInactive && active) {
+                    onActive();
+                }
+                if (mActiveCount == 0 && !active) {
+                    onInactive();
+                }
+            }
+        });
     }
 
     private static boolean isActiveState(Lifecycle.State state) {
