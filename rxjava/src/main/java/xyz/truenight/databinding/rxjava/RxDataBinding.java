@@ -49,9 +49,9 @@ public class RxDataBinding {
                     emitter.onNext(field.get());
                 }
             };
-            field.addOnPropertyChangedCallback(callback);
             emitter.setCancellable(() -> field.removeOnPropertyChangedCallback(callback));
             emitter.onNext(field.get());
+            field.addOnPropertyChangedCallback(callback);
         });
     }
 
@@ -63,9 +63,9 @@ public class RxDataBinding {
                     emitter.onNext(Optional.ofNullable(field.get()));
                 }
             };
-            field.addOnPropertyChangedCallback(callback);
             emitter.setCancellable(() -> field.removeOnPropertyChangedCallback(callback));
             emitter.onNext(Optional.ofNullable(field.get()));
+            field.addOnPropertyChangedCallback(callback);
         });
     }
 
@@ -77,8 +77,9 @@ public class RxDataBinding {
                     emitter.onNext(field);
                 }
             };
-            field.addOnPropertyChangedCallback(callback);
             emitter.setCancellable(() -> field.removeOnPropertyChangedCallback(callback));
+            emitter.onNext(field);
+            field.addOnPropertyChangedCallback(callback);
         });
     }
 
@@ -196,9 +197,9 @@ public class RxDataBinding {
                     emitter.onNext(change);
                 }
             };
+            emitter.setCancellable(() -> list.removeOnListChangedCallback(callback));
             emitter.onNext(new ListChange<>(list));
             list.addOnListChangedCallback(callback);
-            emitter.setCancellable(() -> list.removeOnListChangedCallback(callback));
         });
     }
 
