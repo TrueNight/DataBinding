@@ -8,18 +8,15 @@ import io.reactivex.ObservableTransformer;
 
 
 public class RxLoading extends ObservableBoolean {
-    private ObservableTransformer transformer;
-    private AtomicInteger mCount;
+
+    private AtomicInteger mCount = new AtomicInteger();
 
     public static RxLoading create() {
         return new RxLoading();
     }
 
     private RxLoading() {
-        mCount = new AtomicInteger();
-        transformer = observable -> observable
-                .doOnSubscribe(this::inc)
-                .doFinally(this::dec);
+
     }
 
     private void inc(Object disposable) {
@@ -40,8 +37,15 @@ public class RxLoading extends ObservableBoolean {
 
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ObservableTransformer<T, T> transformer() {
-        return transformer;
+        return upstream -> upstream
+                .doOnSubscribe(this::inc)
+                .doFinally(this::dec);
+    }
+
+    public <T> ObservableTransformer<T, T> transformerOnNext() {
+        return upstream -> upstream
+                .doOnSubscribe(this::inc)
+                .doOnNext(next -> dec());
     }
 }
