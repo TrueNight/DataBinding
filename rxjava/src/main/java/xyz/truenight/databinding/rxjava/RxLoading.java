@@ -2,9 +2,11 @@ package xyz.truenight.databinding.rxjava;
 
 import android.databinding.ObservableBoolean;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.ObservableTransformer;
+import io.reactivex.disposables.Disposable;
 
 
 public class RxLoading extends ObservableBoolean {
@@ -44,8 +46,35 @@ public class RxLoading extends ObservableBoolean {
     }
 
     public <T> ObservableTransformer<T, T> transformerOnNext() {
-        return upstream -> upstream
-                .doOnSubscribe(this::inc)
-                .doOnNext(next -> dec());
+        return upstream -> {
+            AtomicBoolean loading = new AtomicBoolean();
+            return upstream
+                    .doOnSubscribe(disposable -> {
+                        loadingStarted(loading, disposable);
+                    })
+                    .doOnNext(t -> {
+                        loadingFinished(loading);
+                    })
+                    .doOnError(throwable -> {
+                        loadingFinished(loading);
+                    })
+                    .doOnDispose(() -> {
+                        loadingFinished(loading);
+                    });
+        };
+    }
+
+    private void loadingStarted(AtomicBoolean loading, Disposable disposable) {
+        if (!loading.get()) {
+            loading.set(true);
+            inc(disposable);
+        }
+    }
+
+    private void loadingFinished(AtomicBoolean loading) {
+        if (loading.get()) {
+            loading.set(false);
+            dec();
+        }
     }
 }
