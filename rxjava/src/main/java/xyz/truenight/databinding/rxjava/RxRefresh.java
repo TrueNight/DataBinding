@@ -51,7 +51,7 @@ public class RxRefresh implements Action {
             }
             return observable
                     .retryWhen(o -> o.flatMap(t -> merge.firstElement().toObservable()))
-                    .repeatWhen(th -> th.flatMap(t -> merge.firstElement().toObservable()));
+                    .repeatWhen(o -> o.flatMap(t -> merge.firstElement().toObservable()));
         };
     }
 
@@ -67,7 +67,7 @@ public class RxRefresh implements Action {
             }
             return observable
                     .retryWhen(o -> o.flatMap(t -> refresh.firstElement().toObservable()))
-                    .repeatWhen(th -> th.flatMap(t -> refresh.firstElement().toObservable()));
+                    .repeatWhen(o -> o.flatMap(t -> refresh.firstElement().toObservable()));
         };
     }
 
@@ -83,7 +83,7 @@ public class RxRefresh implements Action {
             return observable
                     .retryWhen(o -> o.flatMap(t -> refresh
                             .takeWhile(predicate).firstElement().toObservable()))
-                    .repeatWhen(th -> th.flatMap(t -> refresh.takeWhile(predicate).firstElement().toObservable()));
+                    .repeatWhen(o -> o.flatMap(t -> refresh.takeWhile(predicate).firstElement().toObservable()));
         };
     }
 

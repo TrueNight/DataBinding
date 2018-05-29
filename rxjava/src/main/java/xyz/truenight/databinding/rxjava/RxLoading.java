@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.ObservableTransformer;
-import io.reactivex.disposables.Disposable;
 
 
 public class RxLoading extends ObservableBoolean {
@@ -27,7 +26,13 @@ public class RxLoading extends ObservableBoolean {
         }
     }
 
-    private void dec() {
+    public void inc() {
+        if (mCount.incrementAndGet() == 1) {
+            super.set(true);
+        }
+    }
+
+    public void dec() {
         if (mCount.decrementAndGet() == 0) {
             super.set(false);
         }
@@ -50,7 +55,7 @@ public class RxLoading extends ObservableBoolean {
             AtomicBoolean loading = new AtomicBoolean();
             return upstream
                     .doOnSubscribe(disposable -> {
-                        loadingStarted(loading, disposable);
+                        loadingStarted(loading);
                     })
                     .doOnNext(t -> {
                         loadingFinished(loading);
@@ -64,10 +69,10 @@ public class RxLoading extends ObservableBoolean {
         };
     }
 
-    private void loadingStarted(AtomicBoolean loading, Disposable disposable) {
+    private void loadingStarted(AtomicBoolean loading) {
         if (!loading.get()) {
             loading.set(true);
-            inc(disposable);
+            inc();
         }
     }
 
