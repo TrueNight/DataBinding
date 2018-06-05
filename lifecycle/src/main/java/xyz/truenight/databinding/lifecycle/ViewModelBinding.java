@@ -14,7 +14,7 @@ import android.support.v4.app.FragmentActivity;
  * Copyright © Mikhail Frolov
  */
 
-public class ViewModelBinding {
+public class ViewModelBinding implements BindingProvider {
 
     private final FragmentActivity mActivity;
     private final Fragment mFragment;
@@ -74,6 +74,11 @@ public class ViewModelBinding {
 
     public ViewModelProvider.Factory getFactory() {
         return mFactory == null ? null : new SingleProviderFactory<>(mFactory);
+    }
+
+    @Override
+    public BindingList getItems() {
+        return new BindingList(this);
     }
 
 

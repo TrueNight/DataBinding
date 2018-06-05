@@ -42,7 +42,8 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
             mBinding = DataBindingUtil.inflate(inflater, getBindingLayoutRes(), container, false);
         }
 
-        List<ViewModelBinding> bindings = getViewModelBindings();
+        BindingProvider viewModelBindings = getViewModelBindings();
+        List<ViewModelBinding> bindings = viewModelBindings == null ? null : viewModelBindings.getItems();
 
         if (Utils.isNotEmpty(bindings)) {
             for (ViewModelBinding holder : bindings) {
@@ -86,7 +87,7 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
     @LayoutRes
     public abstract int getBindingLayoutRes();
 
-    public abstract BindingList getViewModelBindings();
+    public abstract BindingProvider getViewModelBindings();
 
     public <VM extends ViewModel> VM getViewModel(Class<VM> viewModelClass) {
         //noinspection unchecked

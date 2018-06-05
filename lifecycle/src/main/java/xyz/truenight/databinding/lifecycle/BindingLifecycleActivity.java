@@ -43,7 +43,8 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
             mBinding = DataBindingUtil.setContentView(this, getBindingLayoutRes());
         }
 
-        List<ViewModelBinding> bindings = getViewModelBindings();
+        BindingProvider viewModelBindings = getViewModelBindings();
+        List<ViewModelBinding> bindings = viewModelBindings == null ? null : viewModelBindings.getItems();
 
         if (Utils.isNotEmpty(bindings)) {
             for (ViewModelBinding holder : bindings) {
@@ -86,7 +87,7 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
     public abstract int getBindingLayoutRes();
 
     @SuppressWarnings("unchecked")
-    public abstract BindingList getViewModelBindings();
+    public abstract BindingProvider getViewModelBindings();
 
     public <VM extends ViewModel> VM getViewModel(Class<VM> viewModelClass) {
         //noinspection unchecked

@@ -11,12 +11,17 @@ import java.util.Collections;
  * Copyright © Mikhail Frolov
  */
 
-public class BindingList extends ArrayList<ViewModelBinding> {
+public class BindingList extends ArrayList<ViewModelBinding> implements BindingProvider {
 
     public BindingList() {
     }
 
     public BindingList(ViewModelBinding... bindings) {
         Collections.addAll(this, bindings);
+    }
+
+    @Override
+    public BindingList getItems() {
+        return this;
     }
 }
