@@ -64,11 +64,10 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
                 }
                 ViewModel viewModel = provider.get(holder.getVmClass());
                 map.put(holder.getVmClass().getCanonicalName(), viewModel);
+                onPrepareViewModel(holder.getVmClass(), viewModel);
                 if (viewModel instanceof LifecycleTrackingViewModel) {
                     ((LifecycleTrackingViewModel) viewModel).registerLifecycle(this);
                 }
-
-                onPrepareViewModels();
 
                 if (!mBinding.setVariable(holder.getVariableId(), viewModel)) {
                     BindingUtil.throwMissingVariable(mBinding, holder.getVariableId(), getBindingLayoutRes());
@@ -77,7 +76,7 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
         }
     }
 
-    protected void onPrepareViewModels() {
+    protected void onPrepareViewModel(Class<? extends ViewModel> vmClass, ViewModel viewModel) {
 
     }
 
