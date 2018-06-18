@@ -68,11 +68,17 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
                     ((LifecycleTrackingViewModel) viewModel).registerLifecycle(this);
                 }
 
+                onPrepareViewModels();
+
                 if (!mBinding.setVariable(holder.getVariableId(), viewModel)) {
                     BindingUtil.throwMissingVariable(mBinding, holder.getVariableId(), getBindingLayoutRes());
                 }
             }
         }
+    }
+
+    protected void onPrepareViewModels() {
+
     }
 
     @Override

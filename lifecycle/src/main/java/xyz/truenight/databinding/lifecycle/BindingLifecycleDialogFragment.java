@@ -74,6 +74,8 @@ public abstract class BindingLifecycleDialogFragment<B extends ViewDataBinding> 
                     ((LifecycleTrackingViewModel) viewModel).registerLifecycle(this);
                 }
 
+                onPrepareViewModels();
+
                 if (!mBinding.setVariable(holder.getVariableId(), viewModel)) {
                     BindingUtil.throwMissingVariable(mBinding, holder.getVariableId(), getBindingLayoutRes());
                 }
@@ -81,6 +83,10 @@ public abstract class BindingLifecycleDialogFragment<B extends ViewDataBinding> 
         }
 
         return mBinding.getRoot();
+    }
+
+    protected void onPrepareViewModels() {
+
     }
 
     @Override
