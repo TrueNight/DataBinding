@@ -36,7 +36,6 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
     private final OnApplyQuery<T> applyQuery;
     private Realm closable;
     private RealmResults<T> all;
-    private T item;
     private final RealmChangeListener<RealmResults<T>> listener;
     private AtomicInteger count = new AtomicInteger();
 
@@ -64,7 +63,7 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
     @Deprecated
     @Override
     public void set(T value) {
-
+        super.set(value);
     }
 
     private RealmChangeListener<RealmResults<T>> createListener() {
@@ -86,8 +85,7 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
             RealmQuery<T> realmQuery = applyQuery.onApply(closable.where(cls));
             // workaround for NULL
             all = realmQuery.findAll();
-            item = Utils.first(all);
-            set(Utils.unmanage(realmConfig, item));
+            super.set(Utils.unmanage(realmConfig, Utils.first(all)));
             all.addChangeListener(listener);
         }
     }
@@ -98,7 +96,6 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
         if (count.decrementAndGet() == 0) {
             all.removeChangeListener(listener);
             all = null;
-            item = null;
             closable.close();
             closable = null;
         }
