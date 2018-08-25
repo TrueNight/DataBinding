@@ -103,11 +103,11 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
         this.updateOnModification = updateOnModification;
     }
 
-    public void excludeCallback(Class<? extends OnListChangedCallback> cls) {
+    public static void excludeCallback(Class<? extends OnListChangedCallback> cls) {
         EXCLUDE.add(cls.getName());
     }
 
-    public void removeExclusion(Class<? extends OnListChangedCallback> cls) {
+    public static void removeExclusion(Class<? extends OnListChangedCallback> cls) {
         EXCLUDE.remove(cls.getName());
     }
 

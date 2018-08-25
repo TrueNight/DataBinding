@@ -81,11 +81,11 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
         };
     }
 
-    public void excludeCallback(Class<? extends OnPropertyChangedCallback> cls) {
+    public static void excludeCallback(Class<? extends OnPropertyChangedCallback> cls) {
         EXCLUDE.add(cls.getName());
     }
 
-    public void removeExclusion(Class<? extends OnPropertyChangedCallback> cls) {
+    public static void removeExclusion(Class<? extends OnPropertyChangedCallback> cls) {
         EXCLUDE.remove(cls.getName());
     }
 
