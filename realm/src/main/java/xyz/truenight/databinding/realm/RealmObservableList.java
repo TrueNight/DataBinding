@@ -111,6 +111,14 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
         EXCLUDE.remove(cls.getName());
     }
 
+    public static void excludeCallback(String className) {
+        EXCLUDE.add(className);
+    }
+
+    public static void removeExclusion(String className) {
+        EXCLUDE.remove(className);
+    }
+
     @Deprecated
     @Override
     public T set(int index, T element) {
