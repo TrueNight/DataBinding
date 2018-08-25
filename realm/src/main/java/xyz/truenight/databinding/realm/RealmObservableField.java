@@ -2,7 +2,9 @@ package xyz.truenight.databinding.realm;
 
 import android.databinding.ObservableField;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -17,6 +19,9 @@ import io.realm.RealmResults;
  */
 public class RealmObservableField<T extends RealmModel> extends ObservableField<T> {
 
+    private final Set<OnPropertyChangedCallback> count = new CopyOnWriteArraySet<>();
+
+    private static final Set<String> EXCLUDE = new HashSet<>();
 
     public static <E extends RealmModel> OnApplyQuery<E> all() {
         //noinspection unchecked
@@ -37,7 +42,6 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
     private Realm closable;
     private RealmResults<T> all;
     private final RealmChangeListener<RealmResults<T>> listener;
-    private AtomicInteger count = new AtomicInteger();
 
     /**
      * Creates a new AutoQueryRealmObservableField of type T.
@@ -77,23 +81,35 @@ public class RealmObservableField<T extends RealmModel> extends ObservableField<
         };
     }
 
+    public void excludeCallback(Class<? extends OnPropertyChangedCallback> cls) {
+        EXCLUDE.add(cls.getName());
+    }
+
+    public void removeExclusion(Class<? extends OnPropertyChangedCallback> cls) {
+        EXCLUDE.remove(cls.getName());
+    }
+
     @Override
     public void addOnPropertyChangedCallback(OnPropertyChangedCallback callback) {
         super.addOnPropertyChangedCallback(callback);
-        if (count.incrementAndGet() == 1) {
-            closable = Realm.getInstance(realmConfig);
-            RealmQuery<T> realmQuery = applyQuery.onApply(closable.where(cls));
-            // workaround for NULL
-            all = realmQuery.findAll();
-            super.set(Utils.unmanage(realmConfig, Utils.first(all)));
-            all.addChangeListener(listener);
+        if (!EXCLUDE.contains(callback.getClass().getName())) {
+            if (count.isEmpty()) {
+                closable = Realm.getInstance(realmConfig);
+                RealmQuery<T> realmQuery = applyQuery.onApply(closable.where(cls));
+                // workaround for NULL
+                all = realmQuery.findAll();
+                super.set(Utils.unmanage(realmConfig, Utils.first(all)));
+                all.addChangeListener(listener);
+            }
+            count.add(callback);
         }
     }
 
     @Override
     public void removeOnPropertyChangedCallback(OnPropertyChangedCallback callback) {
         super.removeOnPropertyChangedCallback(callback);
-        if (count.decrementAndGet() == 0) {
+        count.remove(callback);
+        if (count.isEmpty()) {
             all.removeChangeListener(listener);
             all = null;
             closable.close();

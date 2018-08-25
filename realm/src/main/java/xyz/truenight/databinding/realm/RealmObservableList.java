@@ -7,7 +7,10 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
@@ -29,6 +32,10 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
         //noinspection unchecked
         return RealmObservableField.all();
     }
+
+    private final Set<OnListChangedCallback> count = new CopyOnWriteArraySet<>();
+
+    private static final Set<String> EXCLUDE = new HashSet<>();
 
     private final Class<T> cls;
     private final OnApplyQuery<T> applyQuery;
@@ -94,6 +101,14 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
         this.mirror = Collections.emptyList();
         this.listener = createListener();
         this.updateOnModification = updateOnModification;
+    }
+
+    public void excludeCallback(Class<? extends OnListChangedCallback> cls) {
+        EXCLUDE.add(cls.getName());
+    }
+
+    public void removeExclusion(Class<? extends OnListChangedCallback> cls) {
+        EXCLUDE.remove(cls.getName());
     }
 
     @Deprecated
@@ -203,26 +218,29 @@ public class RealmObservableList<T extends RealmModel> extends AbstractList<T> i
 
     @Override
     public void addOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
-        boolean first = listeners.isEmpty();
         listeners.add(listener);
-        if (first) {
-            realm = Realm.getInstance(realmConfig);
-            RealmQuery<T> realmQuery = applyQuery.onApply(realm.where(cls));
-            if (findFunction == null) {
-                items = realmQuery.findAllAsync();
-            } else {
-                items = findFunction.find(realmQuery);
+        if (!EXCLUDE.contains(listener.getClass().getName())) {
+            if (count.isEmpty()) {
+                realm = Realm.getInstance(realmConfig);
+                RealmQuery<T> realmQuery = applyQuery.onApply(realm.where(cls));
+                if (findFunction == null) {
+                    items = realmQuery.findAllAsync();
+                } else {
+                    items = findFunction.find(realmQuery);
+                }
+                mirror = new ArrayList<>(items);
+                addRealmChangeListener();
+                listeners.notifyChanged(RealmObservableList.this);
             }
-            mirror = new ArrayList<>(items);
-            addRealmChangeListener();
-            listeners.notifyChanged(RealmObservableList.this);
+            count.add(listener);
         }
     }
 
     @Override
     public void removeOnListChangedCallback(OnListChangedCallback<? extends ObservableList<T>> listener) {
         listeners.remove(listener);
-        if (listeners.isEmpty()) {
+        count.remove(listener);
+        if (count.isEmpty()) {
             removeRealmChangeListener();
             items = null;
             mirror = Collections.emptyList();
