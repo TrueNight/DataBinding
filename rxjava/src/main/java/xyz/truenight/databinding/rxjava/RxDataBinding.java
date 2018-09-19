@@ -10,20 +10,16 @@ import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
 import android.databinding.ObservableLong;
+import android.databinding.ObservableMap;
 import android.databinding.ObservableShort;
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import xyz.truenight.utils.Optional;
-import xyz.truenight.utils.Utils;
 
 /**
  * Copyright (C) 2017 Mikhail Frolov
@@ -293,56 +289,20 @@ public class RxDataBinding {
         });
     }
 
-    public static <T> Observer<? super T> field(ObservableField<T> field) {
-        return new Observer<T>() {
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(T data) {
-                field.set(data);
-            }
-        };
-    }
-
-    public static Observer<Integer> field(ObservableInt field) {
-        return new Observer<Integer>() {
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Integer data) {
-                field.set(Utils.safe(data));
-            }
-        };
-    }
-
-    public static <T> Consumer<List<? extends T>> listConsumer(ObservableList<T> list) {
-        return data -> Utils.merge(list, data);
+    public static <K, V> Observable<ObservableMap<K, V>> asObservable(ObservableMap<K, V> field) {
+        return Observable.create(emitter -> {
+            ObservableMap.OnMapChangedCallback<ObservableMap<K, V>, K, V> callback = new ObservableMap.OnMapChangedCallback<ObservableMap<K, V>, K, V>() {
+                @Override
+                public void onMapChanged(ObservableMap<K, V> sender, K key) {
+                    emitter.onNext(field);
+                }
+            };
+            emitter.setCancellable(() -> {
+                field.removeOnMapChangedCallback(callback);
+            });
+            emitter.onNext(field);
+            field.addOnMapChangedCallback(callback);
+        });
     }
 
     public static <T> ObservableTransformer<T, T> loadingNext(ObservableBoolean loading) {
