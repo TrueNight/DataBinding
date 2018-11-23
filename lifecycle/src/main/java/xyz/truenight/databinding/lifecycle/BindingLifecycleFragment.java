@@ -33,6 +33,7 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
     private final SimpleArrayMap<String, ViewModel> map = new SimpleArrayMap<>();
 
     private B mBinding;
+    private boolean mBinded;
 
     @CallSuper
     @Nullable
@@ -42,36 +43,39 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
             mBinding = DataBindingUtil.inflate(inflater, getBindingLayoutRes(), container, false);
         }
 
-        BindingProvider viewModelBindings = getViewModelBindings();
-        List<ViewModelBinding> bindings = viewModelBindings == null ? null : viewModelBindings.getItems();
+        if (!mBinded) {
+            BindingProvider viewModelBindings = getViewModelBindings();
+            List<ViewModelBinding> bindings = viewModelBindings == null ? null : viewModelBindings.getItems();
 
-        if (Utils.isNotEmpty(bindings)) {
-            for (ViewModelBinding holder : bindings) {
-                ViewModelProvider provider;
-                if (holder.getFactory() == null) {
-                    if (holder.getActivity() == null) {
-                        provider = ViewModelProviders.of(holder.getFragment());
+            if (Utils.isNotEmpty(bindings)) {
+                for (ViewModelBinding holder : bindings) {
+                    ViewModelProvider provider;
+                    if (holder.getFactory() == null) {
+                        if (holder.getActivity() == null) {
+                            provider = ViewModelProviders.of(holder.getFragment());
+                        } else {
+                            provider = ViewModelProviders.of(holder.getActivity());
+                        }
                     } else {
-                        provider = ViewModelProviders.of(holder.getActivity());
+                        if (holder.getActivity() == null) {
+                            provider = ViewModelProviders.of(holder.getFragment(), holder.getFactory());
+                        } else {
+                            provider = ViewModelProviders.of(holder.getActivity(), holder.getFactory());
+                        }
                     }
-                } else {
-                    if (holder.getActivity() == null) {
-                        provider = ViewModelProviders.of(holder.getFragment(), holder.getFactory());
-                    } else {
-                        provider = ViewModelProviders.of(holder.getActivity(), holder.getFactory());
+                    ViewModel viewModel = provider.get(holder.getVmClass());
+                    map.put(holder.getVmClass().getCanonicalName(), viewModel);
+                    onPrepareViewModel(holder.getVmClass(), viewModel);
+                    if (viewModel instanceof LifecycleTrackingViewModel) {
+                        ((LifecycleTrackingViewModel) viewModel).registerLifecycle(this);
                     }
-                }
-                ViewModel viewModel = provider.get(holder.getVmClass());
-                map.put(holder.getVmClass().getCanonicalName(), viewModel);
-                onPrepareViewModel(holder.getVmClass(), viewModel);
-                if (viewModel instanceof LifecycleTrackingViewModel) {
-                    ((LifecycleTrackingViewModel) viewModel).registerLifecycle(this);
-                }
 
-                if (!mBinding.setVariable(holder.getVariableId(), viewModel)) {
-                    BindingUtil.throwMissingVariable(mBinding, holder.getVariableId(), getBindingLayoutRes());
+                    if (!mBinding.setVariable(holder.getVariableId(), viewModel)) {
+                        BindingUtil.throwMissingVariable(mBinding, holder.getVariableId(), getBindingLayoutRes());
+                    }
                 }
             }
+            mBinded = true;
         }
 
         return mBinding.getRoot();
@@ -82,10 +86,11 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         if (mBinding != null) {
             mBinding.unbind();
+            mBinded = false;
         }
     }
 
