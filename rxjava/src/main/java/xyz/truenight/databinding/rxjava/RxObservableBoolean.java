@@ -1,10 +1,9 @@
 package xyz.truenight.databinding.rxjava;
 
-import android.databinding.ObservableBoolean;
-
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import androidx.databinding.ObservableBoolean;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.BehaviorSubject;

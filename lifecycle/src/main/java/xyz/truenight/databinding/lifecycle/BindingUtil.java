@@ -2,12 +2,13 @@ package xyz.truenight.databinding.lifecycle;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import androidx.annotation.LayoutRes;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * Created by true
@@ -19,7 +20,7 @@ import java.lang.reflect.Method;
 
 public class BindingUtil {
     /**
-     * Helper to throw an exception when {@link android.databinding.ViewDataBinding#setVariable(int,
+     * Helper to throw an exception when {@link androidx.databinding.ViewDataBinding#setVariable(int,
      * Object)} returns false.
      */
     public static void throwMissingVariable(ViewDataBinding binding, int bindingVariable, @LayoutRes int layoutRes) {

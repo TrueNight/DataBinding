@@ -1,8 +1,5 @@
 package xyz.truenight.databinding.realm;
 
-import android.databinding.ListChangeRegistry;
-import android.databinding.ObservableList;
-
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import androidx.databinding.ListChangeRegistry;
+import androidx.databinding.ObservableList;
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
 import io.realm.OrderedRealmCollectionChangeListener;

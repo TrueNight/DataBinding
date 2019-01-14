@@ -1,11 +1,10 @@
 package xyz.truenight.databinding.realm;
 
-import android.databinding.ObservableField;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import androidx.databinding.ObservableField;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmConfiguration;

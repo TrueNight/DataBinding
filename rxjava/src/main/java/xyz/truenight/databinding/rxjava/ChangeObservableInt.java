@@ -1,9 +1,10 @@
 package xyz.truenight.databinding.rxjava;
 
-import android.databinding.ObservableInt;
 import android.util.Log;
 
 import java.lang.reflect.Field;
+
+import androidx.databinding.ObservableInt;
 
 /**
  * Created by true

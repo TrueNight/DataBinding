@@ -8,7 +8,7 @@ ext {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -34,12 +34,12 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     // components
-    implementation "android.arch.lifecycle:runtime:1.1.1"
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01"
 
-    implementation 'xyz.truenight.utils:utils:2.1.1'
+    implementation 'xyz.truenight.utils:utils:2.1.11'
 }
 
 apply from: '../ext.gradle'

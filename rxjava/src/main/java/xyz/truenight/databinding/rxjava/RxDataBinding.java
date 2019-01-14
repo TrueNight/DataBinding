@@ -1,22 +1,21 @@
 package xyz.truenight.databinding.rxjava;
 
-import android.databinding.BaseObservable;
-import android.databinding.ObservableBoolean;
-import android.databinding.ObservableByte;
-import android.databinding.ObservableChar;
-import android.databinding.ObservableDouble;
-import android.databinding.ObservableField;
-import android.databinding.ObservableFloat;
-import android.databinding.ObservableInt;
-import android.databinding.ObservableList;
-import android.databinding.ObservableLong;
-import android.databinding.ObservableMap;
-import android.databinding.ObservableShort;
-import android.support.annotation.IntDef;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import androidx.annotation.IntDef;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableByte;
+import androidx.databinding.ObservableChar;
+import androidx.databinding.ObservableDouble;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableFloat;
+import androidx.databinding.ObservableInt;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ObservableLong;
+import androidx.databinding.ObservableMap;
+import androidx.databinding.ObservableShort;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import xyz.truenight.utils.Optional;
@@ -31,9 +30,9 @@ public class RxDataBinding {
 
     public static Observable<Boolean> asObservable(ObservableBoolean field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -45,9 +44,9 @@ public class RxDataBinding {
 
     public static Observable<Integer> asObservable(ObservableInt field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -59,9 +58,9 @@ public class RxDataBinding {
 
     public static Observable<Long> asObservable(ObservableLong field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -73,9 +72,9 @@ public class RxDataBinding {
 
     public static Observable<Short> asObservable(ObservableShort field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -87,9 +86,9 @@ public class RxDataBinding {
 
     public static Observable<Float> asObservable(ObservableFloat field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -101,9 +100,9 @@ public class RxDataBinding {
 
     public static Observable<Double> asObservable(ObservableDouble field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -115,9 +114,9 @@ public class RxDataBinding {
 
     public static Observable<Character> asObservable(ObservableChar field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -129,9 +128,9 @@ public class RxDataBinding {
 
     public static Observable<Byte> asObservable(ObservableByte field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field.get());
                 }
             };
@@ -143,9 +142,9 @@ public class RxDataBinding {
 
     public static <T> Observable<Optional<T>> asObservable(ObservableField<T> field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(Optional.ofNullable(field.get()));
                 }
             };
@@ -157,9 +156,9 @@ public class RxDataBinding {
 
     public static <T extends BaseObservable> Observable<T> asObservable(T field) {
         return Observable.create(emitter -> {
-            android.databinding.Observable.OnPropertyChangedCallback callback = new android.databinding.Observable.OnPropertyChangedCallback() {
+            androidx.databinding.Observable.OnPropertyChangedCallback callback = new androidx.databinding.Observable.OnPropertyChangedCallback() {
                 @Override
-                public void onPropertyChanged(android.databinding.Observable sender, int propertyId) {
+                public void onPropertyChanged(androidx.databinding.Observable sender, int propertyId) {
                     emitter.onNext(field);
                 }
             };

@@ -1,10 +1,9 @@
 package xyz.truenight.databinding.rxjava;
 
-import android.databinding.ObservableBoolean;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import androidx.databinding.ObservableBoolean;
 import io.reactivex.ObservableTransformer;
 
 
