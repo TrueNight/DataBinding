@@ -34,10 +34,10 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     // components
-    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha01"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha04"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"
 
     implementation 'xyz.truenight.utils:utils:2.1.11'
 }

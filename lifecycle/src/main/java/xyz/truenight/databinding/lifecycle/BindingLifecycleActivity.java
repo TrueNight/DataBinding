@@ -94,9 +94,19 @@ public abstract class BindingLifecycleActivity<B extends ViewDataBinding> extend
     @SuppressWarnings("unchecked")
     public abstract BindingProvider getViewModelBindings();
 
+    /**
+     * Returns injected view model
+     */
     public <VM extends ViewModel> VM getViewModel(Class<VM> viewModelClass) {
         //noinspection unchecked
         return (VM) map.get(viewModelClass.getCanonicalName());
+    }
+
+    /**
+     * Returns view model from storage of current Activity
+     */
+    public <VM extends ViewModel> VM getViewModelFromStorage(Class<VM> viewModelClass) {
+        return ViewModelProviders.of(this).get(viewModelClass);
     }
 
     public B binding() {

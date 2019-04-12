@@ -99,9 +99,19 @@ public abstract class BindingLifecycleFragment<B extends ViewDataBinding> extend
 
     public abstract BindingProvider getViewModelBindings();
 
+    /**
+     * Returns injected view model
+     */
     public <VM extends ViewModel> VM getViewModel(Class<VM> viewModelClass) {
         //noinspection unchecked
         return (VM) map.get(viewModelClass.getCanonicalName());
+    }
+
+    /**
+     * Returns view model from storage of current Fragment
+     */
+    public <VM extends ViewModel> VM getViewModelFromStorage(Class<VM> viewModelClass) {
+        return ViewModelProviders.of(this).get(viewModelClass);
     }
 
     public B binding() {
