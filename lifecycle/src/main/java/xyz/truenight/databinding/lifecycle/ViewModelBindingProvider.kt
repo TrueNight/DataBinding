@@ -48,3 +48,8 @@ inline fun <reified T : ViewModel> Fragment.bindVmParent(
         variableId: Int,
         noinline factory: () -> T
 ) = parentFragment!!.bindVm(variableId, factory)
+
+fun <T : ViewModel> ViewModelStoreOwner.setVm(
+        variableId: Int,
+        factory: () -> T
+) = SetViewModelBindingProvider(variableId, factory)
