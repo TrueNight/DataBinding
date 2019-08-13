@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 ext {
     bintrayName = 'databinding-lifecycle'
@@ -33,15 +36,16 @@ android {
 
 }
 
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
-    // components
-    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0-alpha04"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"
+tasks.withType(Javadoc).all {
+    enabled = false
+}
 
-    implementation 'xyz.truenight.utils:utils:2.1.11'
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    // components
+    implementation "androidx.lifecycle:lifecycle-runtime:2.2.0-alpha03"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0-alpha03"
 }
 
 apply from: '../ext.gradle'
-apply from: '../publish1.gradle'
-apply from: '../publish2.gradle'
+apply from: '../publish.gradle'

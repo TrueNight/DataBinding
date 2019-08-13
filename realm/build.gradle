@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 ext {
     bintrayName = 'databinding-realm'
@@ -10,11 +13,6 @@ ext {
 
 android {
     compileSdkVersion 28
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 
     defaultConfig {
         minSdkVersion 15
@@ -36,11 +34,13 @@ android {
 
 }
 
+tasks.withType(Javadoc).all {
+    enabled = false
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
 }
 
 apply from: '../ext.gradle'
-apply from: '../publish1.gradle'
-apply from: '../publish2.gradle'
+apply from: '../publish.gradle'
