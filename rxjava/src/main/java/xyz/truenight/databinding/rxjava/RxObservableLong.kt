@@ -39,19 +39,16 @@ class RxObservableLong internal constructor(val observable: Observable<Long>, de
     }
 }
 
+private fun Optional<Long>?.safe() = this?.value.safe()
 
-@JvmOverloads
 fun Observable<Long>.toBinding(default: Long = 0) =
         RxObservableLong(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Long>>.toBindingOptional(default: Long = 0) =
-        RxObservableLong(this.map { RxObservableLong.safe(it) }, default)
+fun Observable<Optional<Long>>.toBinding(default: Optional<Long> = Optional.empty()) =
+        RxObservableLong(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Long>.toBinding(default: Long = 0) =
         RxObservableLong(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Long>>.toBindingOptional(default: Long = 0) =
-        RxObservableLong(this.map { RxObservableLong.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Long>>.toBinding(default: Optional<Long> = Optional.empty()) =
+        RxObservableLong(this.map { it.safe() }.toObservable(), default.safe())

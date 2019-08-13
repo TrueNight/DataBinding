@@ -33,24 +33,18 @@ class RxObservableByte internal constructor(val observable: Observable<Byte>, de
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal fun safe(value: Optional<Byte>?) = value?.value.safe()
-    }
 }
 
-@JvmOverloads
+private fun Optional<Byte>?.safe() = this?.value.safe()
+
 fun Observable<Byte>.toBinding(default: Byte = 0) =
         RxObservableByte(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Byte>>.toBindingOptional(default: Byte = 0) =
-        RxObservableByte(this.map { RxObservableByte.safe(it) }, default)
+fun Observable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty()) =
+        RxObservableByte(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Byte>.toBinding(default: Byte = 0) =
         RxObservableByte(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Byte>>.toBindingOptional(default: Byte = 0) =
-        RxObservableByte(this.map { RxObservableByte.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty()) =
+        RxObservableByte(this.map { it.safe() }.toObservable(), default.safe())

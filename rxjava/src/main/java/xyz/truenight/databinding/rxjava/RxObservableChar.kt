@@ -33,26 +33,20 @@ class RxObservableChar internal constructor(val observable: Observable<Char>, de
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal const val DEFAULT = '\u0000'
-
-        internal fun safe(value: Optional<Char>?) = value?.value.safe { DEFAULT }
-    }
 }
 
-@JvmOverloads
-fun Observable<Char>.toBinding(default: Char = RxObservableChar.DEFAULT) =
+private const val DEFAULT = '\u0000'
+
+private fun Optional<Char>?.safe() = this?.value.safe { DEFAULT }
+
+fun Observable<Char>.toBinding(default: Char = DEFAULT) =
         RxObservableChar(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Char>>.toBindingOptional(default: Char = RxObservableChar.DEFAULT) =
-        RxObservableChar(this.map { RxObservableChar.safe(it) }, default)
+fun Observable<Optional<Char>>.toBinding(default: Optional<Char> = Optional.empty()) =
+        RxObservableChar(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
-fun Flowable<Char>.toBinding(default: Char = RxObservableChar.DEFAULT) =
+fun Flowable<Char>.toBinding(default: Char = DEFAULT) =
         RxObservableChar(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Char>>.toBindingOptional(default: Char = RxObservableChar.DEFAULT) =
-        RxObservableChar(this.map { RxObservableChar.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Char>>.toBinding(default: Optional<Char> = Optional.empty()) =
+        RxObservableChar(this.map { it.safe() }.toObservable(), default.safe())

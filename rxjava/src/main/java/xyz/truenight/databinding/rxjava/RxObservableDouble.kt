@@ -33,24 +33,18 @@ class RxObservableDouble internal constructor(val observable: Observable<Double>
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal fun safe(value: Optional<Double>?) = value?.value.safe()
-    }
 }
 
-@JvmOverloads
+private fun Optional<Double>?.safe() = this?.value.safe()
+
 fun Observable<Double>.toBinding(default: Double = 0.0) =
         RxObservableDouble(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Double>>.toBindingOptional(default: Double = 0.0) =
-        RxObservableDouble(this.map { RxObservableDouble.safe(it) }, default)
+fun Observable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty()) =
+        RxObservableDouble(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Double>.toBinding(default: Double = 0.0) =
         RxObservableDouble(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Double>>.toBindingOptional(default: Double = 0.0) =
-        RxObservableDouble(this.map { RxObservableDouble.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty()) =
+        RxObservableDouble(this.map { it.safe() }.toObservable(), default.safe())

@@ -33,24 +33,18 @@ class RxObservableInt internal constructor(val observable: Observable<Int>, defa
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal fun safe(value: Optional<Int>?) = value?.value.safe()
-    }
 }
 
-@JvmOverloads
+private fun Optional<Int>?.safe() = this?.value.safe()
+
 fun Observable<Int>.toBinding(default: Int = 0) =
         RxObservableInt(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Int>>.toBindingOptional(default: Int = 0) =
-        RxObservableInt(this.map { RxObservableInt.safe(it) }, default)
+fun Observable<Optional<Int>>.toBinding(default: Optional<Int> = Optional.empty()) =
+        RxObservableInt(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Int>.toBinding(default: Int = 0) =
         RxObservableInt(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Int>>.toBindingOptional(default: Int = 0) =
-        RxObservableInt(this.map { RxObservableInt.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Int>>.toBinding(default: Optional<Int> = Optional.empty()) =
+        RxObservableInt(this.map { it.safe() }.toObservable(), default.safe())

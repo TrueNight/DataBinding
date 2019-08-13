@@ -39,18 +39,16 @@ class RxObservableBoolean internal constructor(val observable: Observable<Boolea
     }
 }
 
-@JvmOverloads
+private fun Optional<Boolean>?.safe() = this?.value.safe()
+
 fun Observable<Boolean>.toBinding(default: Boolean = false) =
         RxObservableBoolean(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Boolean>>.toBindingOptional(default: Boolean = false) =
-        RxObservableBoolean(this.map { RxObservableBoolean.safe(it) }, default)
+fun Observable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty()) =
+        RxObservableBoolean(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Boolean>.toBinding(default: Boolean = false) =
         RxObservableBoolean(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Boolean>>.toBindingOptional(default: Boolean = false) =
-        RxObservableBoolean(this.map { RxObservableBoolean.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty()) =
+        RxObservableBoolean(this.map { it.safe() }.toObservable(), default.safe())

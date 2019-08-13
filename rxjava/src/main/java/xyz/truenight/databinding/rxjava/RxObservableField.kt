@@ -5,6 +5,7 @@ import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import xyz.truenight.utils.optional.Optional
+import xyz.truenight.utils.optional.toOptional
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -34,10 +35,14 @@ class RxObservableField<T : Any> internal constructor(private val observable: Ob
     }
 }
 
-@JvmOverloads
-fun <T : Any> Observable<Optional<T>>.toBindingOptional(default: T? = null) =
-        RxObservableField(this, default)
+fun <T : Any> Observable<Optional<T>>.toBinding(default: Optional<T> = Optional.empty()) =
+        RxObservableField(this, default.value)
 
-@JvmOverloads
-fun <T : Any> Flowable<Optional<T>>.toBinding(default: T? = null) =
-        RxObservableField(this.toObservable(), default)
+fun <T : Any> Flowable<Optional<T>>.toBinding(default: Optional<T> = Optional.empty()) =
+        RxObservableField(this.toObservable(), default.value)
+
+fun <T : Any> Observable<T>.toBinding(default: T? = null) =
+        RxObservableField(this.map { it.toOptional() }, default)
+
+fun <T : Any> Flowable<T>.toBinding(default: T? = null) =
+        RxObservableField(this.toObservable().map { it.toOptional() }, default)

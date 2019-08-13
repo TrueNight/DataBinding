@@ -33,25 +33,19 @@ class RxObservableFloat internal constructor(val observable: Observable<Float>, 
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal fun safe(value: Optional<Float>?) = value?.value.safe()
-    }
 }
 
-@JvmOverloads
+private fun Optional<Float>?.safe() = this?.value.safe()
+
 fun Observable<Float>.toBinding(default: Float = 0f) =
         RxObservableFloat(this, default)
 
-@JvmOverloads
-fun Observable<Optional<Float>>.toBindingOptional(default: Float = 0f) =
-        RxObservableFloat(this.map { RxObservableFloat.safe(it) }, default)
+fun Observable<Optional<Float>>.toBinding(default: Optional<Float> = Optional.empty()) =
+        RxObservableFloat(this.map { it.safe() }, default.safe())
 
-@JvmOverloads
 fun Flowable<Float>.toBinding(default: Float = 0f) =
         RxObservableFloat(this.toObservable(), default)
 
-@JvmOverloads
-fun Flowable<Optional<Float>>.toBindingOptional(default: Float = 0f) =
-        RxObservableFloat(this.map { RxObservableFloat.safe(it) }.toObservable(), default)
+fun Flowable<Optional<Float>>.toBinding(default: Optional<Float> = Optional.empty()) =
+        RxObservableFloat(this.map { it.safe() }.toObservable(), default.safe())
 
