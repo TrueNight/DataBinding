@@ -36,16 +36,16 @@ inline fun <reified VM : ViewModel> ViewModelStoreOwner.viewModel(noinline facto
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.activityViewModel() =
-        activity!!.viewModel<VM>()
+        ViewModelLazy(VM::class) { ViewModelProvider(activity!!) }
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.activityViewModel(noinline factory: () -> VM) =
-        activity!!.viewModel(factory)
+        ViewModelLazy(VM::class) { ViewModelProvider(activity!!, SingleProviderFactory(factory)) }
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.parentViewModel() =
-        parentFragment!!.viewModel<VM>()
+        ViewModelLazy(VM::class) { ViewModelProvider(parentFragment!!) }
 
 @MainThread
 inline fun <reified VM : ViewModel> Fragment.parentViewModel(noinline factory: () -> VM) =
-        parentFragment!!.viewModel(factory)
+        ViewModelLazy(VM::class) { ViewModelProvider(parentFragment!!, SingleProviderFactory(factory)) }
