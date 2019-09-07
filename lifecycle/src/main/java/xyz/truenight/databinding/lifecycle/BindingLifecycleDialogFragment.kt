@@ -1,8 +1,6 @@
 package xyz.truenight.databinding.lifecycle
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +11,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 
@@ -55,7 +53,7 @@ abstract class BindingLifecycleDialogFragment<B : ViewDataBinding> : DialogFragm
             }
         }
 
-        return mBinding!!.root
+        return mBinding?.root
     }
 
     protected open fun onPrepareViewModel(viewModel: ViewModel) {
@@ -74,18 +72,35 @@ abstract class BindingLifecycleDialogFragment<B : ViewDataBinding> : DialogFragm
         return mBinding
     }
 
+    private val fragmentTag get() = javaClass.name
+
     fun show(context: Context) {
         try {
-            show(getFragmentActivity(context)!!.supportFragmentManager, javaClass.name)
+            show(context.asFragmentActivity().supportFragmentManager, fragmentTag)
         } catch (th: Throwable) {
             Log.e(TAG, "", th)
         }
+    }
 
+    fun show(fragment: Fragment) {
+        try {
+            show(fragment.fragmentManager!!, fragmentTag)
+        } catch (th: Throwable) {
+            Log.e(TAG, "", th)
+        }
+    }
+
+    fun showFromParent(fragment: Fragment) {
+        try {
+            show(fragment.childFragmentManager, fragmentTag)
+        } catch (th: Throwable) {
+            Log.e(TAG, "", th)
+        }
     }
 
     fun show(manager: FragmentManager) {
         try {
-            show(manager, javaClass.name)
+            show(manager, fragmentTag)
         } catch (th: Throwable) {
             Log.e(TAG, "", th)
         }
@@ -99,16 +114,5 @@ abstract class BindingLifecycleDialogFragment<B : ViewDataBinding> : DialogFragm
     companion object {
 
         private val TAG = BindingLifecycleDialogFragment::class.java.simpleName
-
-        @JvmOverloads
-        fun getFragmentActivity(context: Context, safe: Boolean = false): FragmentActivity? {
-            return when {
-                context is FragmentActivity -> context
-                context is Activity -> throw IllegalStateException("Context $context NOT support-v4 Activity")
-                context is ContextWrapper -> getFragmentActivity(context.baseContext, safe)
-                safe -> null
-                else -> throw IllegalStateException("Context $context NOT contains activity!")
-            }
-        }
     }
 }

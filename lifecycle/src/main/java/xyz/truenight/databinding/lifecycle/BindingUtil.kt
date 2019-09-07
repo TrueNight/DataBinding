@@ -1,9 +1,12 @@
 package xyz.truenight.databinding.lifecycle
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Resources
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Created by true
@@ -87,5 +90,23 @@ object BindingUtil {
             }
         }
         throw Exception("not found")
+    }
+}
+
+fun Context.asFragmentActivitySafe(): FragmentActivity? {
+    return when (this) {
+        is FragmentActivity -> this
+        is Activity -> null
+        is ContextWrapper -> baseContext.asFragmentActivitySafe()
+        else -> null
+    }
+}
+
+fun Context.asFragmentActivity(): FragmentActivity {
+    return when (this) {
+        is FragmentActivity -> this
+        is Activity -> throw IllegalStateException("Context $this NOT support-v4 Activity")
+        is ContextWrapper -> baseContext.asFragmentActivity()
+        else -> throw IllegalStateException("Context $this NOT contains activity!")
     }
 }

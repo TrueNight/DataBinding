@@ -51,7 +51,7 @@ abstract class BindingLifecycleFragment<B : ViewDataBinding> : Fragment() {
             mBinded = true
         }
 
-        return mBinding!!.root
+        return mBinding?.root
     }
 
     protected open fun onPrepareViewModel(viewModel: ViewModel) {
