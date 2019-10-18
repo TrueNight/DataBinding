@@ -12,11 +12,16 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Copyright (C) 2017 Mikhail Frolov
  */
 
-class RxObservableFloat internal constructor(val observable: Observable<Float>, default: Float) : ObservableFloat(default) {
+class RxObservableFloat @JvmOverloads internal constructor(val observable: Observable<Float>, default: Float, private val setter: ((Float) -> Unit)? = null) : ObservableFloat(default) {
 
     private val count = CopyOnWriteArraySet<androidx.databinding.Observable.OnPropertyChangedCallback>()
 
     private var subscription: Disposable? = null
+
+    override fun set(value: Float) {
+        super.set(value)
+        setter?.let { it(value) }
+    }
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         super.addOnPropertyChangedCallback(callback)

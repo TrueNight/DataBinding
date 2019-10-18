@@ -12,11 +12,16 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Copyright (C) 2017 Mikhail Frolov
  */
 
-class RxObservableShort internal constructor(val observable: Observable<Short>, default: Short) : ObservableShort(default) {
+class RxObservableShort @JvmOverloads internal constructor(val observable: Observable<Short>, default: Short, private val setter: ((Short) -> Unit)? = null) : ObservableShort(default) {
 
     private val count = CopyOnWriteArraySet<androidx.databinding.Observable.OnPropertyChangedCallback>()
 
     private var subscription: Disposable? = null
+
+    override fun set(value: Short) {
+        super.set(value)
+        setter?.let { it(value) }
+    }
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         super.addOnPropertyChangedCallback(callback)
@@ -41,14 +46,14 @@ class RxObservableShort internal constructor(val observable: Observable<Short>, 
 
 private fun Optional<Short>?.safe() = this?.value.safe()
 
-fun Observable<Short>.toBinding(default: Short = 0) =
-        RxObservableShort(this, default)
+fun Observable<Short>.toBinding(default: Short = 0, setter: ((Short) -> Unit)? = null) =
+        RxObservableShort(this, default, setter)
 
-fun Observable<Optional<Short>>.toBinding(default: Optional<Short> = Optional.empty()) =
-        RxObservableShort(this.map { it.safe() }, default.safe())
+fun Observable<Optional<Short>>.toBinding(default: Optional<Short> = Optional.empty(), setter: ((Short) -> Unit)? = null) =
+        RxObservableShort(this.map { it.safe() }, default.safe(), setter)
 
-fun Flowable<Short>.toBinding(default: Short = 0) =
-        RxObservableShort(this.toObservable(), default)
+fun Flowable<Short>.toBinding(default: Short = 0, setter: ((Short) -> Unit)? = null) =
+        RxObservableShort(this.toObservable(), default, setter)
 
-fun Flowable<Optional<Short>>.toBinding(default: Optional<Short> = Optional.empty()) =
-        RxObservableShort(this.map { it.safe() }.toObservable(), default.safe())
+fun Flowable<Optional<Short>>.toBinding(default: Optional<Short> = Optional.empty(), setter: ((Short) -> Unit)? = null) =
+        RxObservableShort(this.map { it.safe() }.toObservable(), default.safe(), setter)

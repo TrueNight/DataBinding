@@ -12,11 +12,16 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Copyright (C) 2017 Mikhail Frolov
  */
 
-class RxObservableDouble internal constructor(val observable: Observable<Double>, default: Double) : ObservableDouble(default) {
+class RxObservableDouble @JvmOverloads internal constructor(val observable: Observable<Double>, default: Double, private val setter: ((Double) -> Unit)? = null) : ObservableDouble(default) {
 
     private val count = CopyOnWriteArraySet<androidx.databinding.Observable.OnPropertyChangedCallback>()
 
     private var subscription: Disposable? = null
+
+    override fun set(value: Double) {
+        super.set(value)
+        setter?.let { it(value) }
+    }
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         super.addOnPropertyChangedCallback(callback)
@@ -37,14 +42,14 @@ class RxObservableDouble internal constructor(val observable: Observable<Double>
 
 private fun Optional<Double>?.safe() = this?.value.safe()
 
-fun Observable<Double>.toBinding(default: Double = 0.0) =
-        RxObservableDouble(this, default)
+fun Observable<Double>.toBinding(default: Double = 0.0, setter: ((Double) -> Unit)? = null) =
+        RxObservableDouble(this, default, setter)
 
-fun Observable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty()) =
-        RxObservableDouble(this.map { it.safe() }, default.safe())
+fun Observable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty(), setter: ((Double) -> Unit)? = null) =
+        RxObservableDouble(this.map { it.safe() }, default.safe(), setter)
 
-fun Flowable<Double>.toBinding(default: Double = 0.0) =
-        RxObservableDouble(this.toObservable(), default)
+fun Flowable<Double>.toBinding(default: Double = 0.0, setter: ((Double) -> Unit)? = null) =
+        RxObservableDouble(this.toObservable(), default, setter)
 
-fun Flowable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty()) =
-        RxObservableDouble(this.map { it.safe() }.toObservable(), default.safe())
+fun Flowable<Optional<Double>>.toBinding(default: Optional<Double> = Optional.empty(), setter: ((Double) -> Unit)? = null) =
+        RxObservableDouble(this.map { it.safe() }.toObservable(), default.safe(), setter)

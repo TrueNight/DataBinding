@@ -12,11 +12,17 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Copyright (C) 2017 Mikhail Frolov
  */
 
-class RxObservableByte internal constructor(val observable: Observable<Byte>, default: Byte) : ObservableByte(default) {
+
+class RxObservableByte @JvmOverloads internal constructor(val observable: Observable<Byte>, default: Byte, private val setter: ((Byte) -> Unit)? = null) : ObservableByte(default) {
 
     private val count = CopyOnWriteArraySet<androidx.databinding.Observable.OnPropertyChangedCallback>()
 
     private var subscription: Disposable? = null
+
+    override fun set(value: Byte) {
+        super.set(value)
+        setter?.let { it(value) }
+    }
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         super.addOnPropertyChangedCallback(callback)
@@ -37,14 +43,14 @@ class RxObservableByte internal constructor(val observable: Observable<Byte>, de
 
 private fun Optional<Byte>?.safe() = this?.value.safe()
 
-fun Observable<Byte>.toBinding(default: Byte = 0) =
-        RxObservableByte(this, default)
+fun Observable<Byte>.toBinding(default: Byte = 0, setter: ((Byte) -> Unit)? = null) =
+        RxObservableByte(this, default, setter)
 
-fun Observable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty()) =
-        RxObservableByte(this.map { it.safe() }, default.safe())
+fun Observable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty(), setter: ((Byte) -> Unit)? = null) =
+        RxObservableByte(this.map { it.safe() }, default.safe(), setter)
 
-fun Flowable<Byte>.toBinding(default: Byte = 0) =
-        RxObservableByte(this.toObservable(), default)
+fun Flowable<Byte>.toBinding(default: Byte = 0, setter: ((Byte) -> Unit)? = null) =
+        RxObservableByte(this.toObservable(), default, setter)
 
-fun Flowable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty()) =
-        RxObservableByte(this.map { it.safe() }.toObservable(), default.safe())
+fun Flowable<Optional<Byte>>.toBinding(default: Optional<Byte> = Optional.empty(), setter: ((Byte) -> Unit)? = null) =
+        RxObservableByte(this.map { it.safe() }.toObservable(), default.safe(), setter)

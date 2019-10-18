@@ -12,11 +12,16 @@ import java.util.concurrent.CopyOnWriteArraySet
  * Copyright (C) 2017 Mikhail Frolov
  */
 
-class RxObservableBoolean internal constructor(val observable: Observable<Boolean>, default: Boolean) : ObservableBoolean(default) {
+class RxObservableBoolean @JvmOverloads internal constructor(val observable: Observable<Boolean>, default: Boolean = false, private val setter: ((Boolean) -> Unit)? = null) : ObservableBoolean(default) {
 
     private val count = CopyOnWriteArraySet<androidx.databinding.Observable.OnPropertyChangedCallback>()
 
     private var subscription: Disposable? = null
+
+    override fun set(value: Boolean) {
+        super.set(value)
+        setter?.let { it(value) }
+    }
 
     override fun addOnPropertyChangedCallback(callback: androidx.databinding.Observable.OnPropertyChangedCallback) {
         super.addOnPropertyChangedCallback(callback)
@@ -33,22 +38,18 @@ class RxObservableBoolean internal constructor(val observable: Observable<Boolea
             subscription?.dispose()
         }
     }
-
-    companion object {
-        internal fun safe(value: Optional<Boolean>?) = value?.value.safe()
-    }
 }
 
 private fun Optional<Boolean>?.safe() = this?.value.safe()
 
-fun Observable<Boolean>.toBinding(default: Boolean = false) =
-        RxObservableBoolean(this, default)
+fun Observable<Boolean>.toBinding(default: Boolean = false, setter: ((Boolean) -> Unit)? = null) =
+        RxObservableBoolean(this, default, setter)
 
-fun Observable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty()) =
-        RxObservableBoolean(this.map { it.safe() }, default.safe())
+fun Observable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty(), setter: ((Boolean) -> Unit)? = null) =
+        RxObservableBoolean(this.map { it.safe() }, default.safe(), setter)
 
-fun Flowable<Boolean>.toBinding(default: Boolean = false) =
-        RxObservableBoolean(this.toObservable(), default)
+fun Flowable<Boolean>.toBinding(default: Boolean = false, setter: ((Boolean) -> Unit)? = null) =
+        RxObservableBoolean(this.toObservable(), default, setter)
 
-fun Flowable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty()) =
-        RxObservableBoolean(this.map { it.safe() }.toObservable(), default.safe())
+fun Flowable<Optional<Boolean>>.toBinding(default: Optional<Boolean> = Optional.empty(), setter: ((Boolean) -> Unit)? = null) =
+        RxObservableBoolean(this.map { it.safe() }.toObservable(), default.safe(), setter)
